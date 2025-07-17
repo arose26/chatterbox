@@ -13,6 +13,7 @@ import scipy.io.wavfile as wavfile
 import io
 from pydub import AudioSegment
 import requests
+import time
 #!pip install git+https://github.com/arose26/chatterbox.git
 
 def chatterbox_to(model, device, dtype):
@@ -157,7 +158,8 @@ def run():
     
     
     url = "https://pastebin.com/raw/13kcemCK"  # Use the raw link for plain text
-    response = requests.get(url)
+    url_with_cachebust = f"{url}?cachebust={int(time.time())}"
+    response = requests.get(url_with_cachebust)
     response.raise_for_status()  # Raise an error if the request failed
     lines = response.text.splitlines()
     texts = [process_text(line) for line in lines if line]
