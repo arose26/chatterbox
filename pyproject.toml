@@ -14,7 +14,7 @@ dependencies = [
     "s3tokenizer",
     "transformers==4.46.3",
     "diffusers==0.29.0",
-    "resemble-perth==1.0.1"
+    "resemble-perth==1.0.1",
     "safetensors==0.5.3"
 ]
 
