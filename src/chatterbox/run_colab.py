@@ -147,8 +147,12 @@ def generate(input_text="Hi, my jock strap fell off.", index=None):
         os.remove(f)
 
 
-with open('narration.txt', 'r') as f:
-  texts = [process_text(line) for line in f if line]
+def run():
+    with open('narration.txt', 'r') as f:
+        texts = [process_text(line) for line in f if line]
 
-for i, text in enumerate(texts):
-  generate(text, i+1)
+    for i, text in enumerate(texts):
+        generate(text, i+1)
+
+if __name__ == "__main__":
+    run()
