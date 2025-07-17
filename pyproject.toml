@@ -8,13 +8,10 @@ license = {file = "LICENSE"}
 authors = [
     {name = "resemble-ai", email = "engineering@resemble.ai"}
 ]
-# For Colab compatibility, do NOT hard-pin torch/torchaudio versions.
 dependencies = [
     "numpy>=1.26.0",
     "librosa==0.11.0",
     "s3tokenizer",
-    "torch",        # Let Colab's built-in version be used.
-    "torchaudio",   # Same as above.
     "transformers==4.46.3",
     "diffusers==0.29.0",
     "resemble-perth==1.0.1",
