@@ -157,15 +157,16 @@ def run():
     #list(model.generate("""test."""))
     
     
-    url = "https://pastebin.com/raw/13kcemCK"  # Use the raw link for plain text
-    url_with_cachebust = f"{url}?cachebust={int(time.time())}"
-    response = requests.get(url_with_cachebust)
-    response.raise_for_status()  # Raise an error if the request failed
-    lines = response.text.splitlines()
-    texts = [process_text(line) for line in lines if line]
+    #url = "https://pastebin.com/raw/13kcemCK"  # Use the raw link for plain text
+    #url_with_cachebust = f"{url}?cachebust={int(time.time())}"
+    #response = requests.get(url_with_cachebust)
+    
+   # response.raise_for_status()  # Raise an error if the request failed
+    #lines = response.text.splitlines()
 
-    #with open('narration.txt', 'r') as f:
-    #    texts = [process_text(line) for line in f if line]
+
+    with open('narration.txt', 'r') as f:
+        texts = [process_text(line) for line in f if line]
 
     for i, text in enumerate(texts):
         generate(text, i+1)
