@@ -33,4 +33,4 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"your_package_name" = ["src/chatterbox/reference_long.mp3"]
+"chatterbox" = ["reference_long.mp3"]
