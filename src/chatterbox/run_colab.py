@@ -100,12 +100,18 @@ def generate(input_text="Hi there.", index=None):
     if index:
         filename = str(index) + '.' + filename
 
+
+    # Get the directory where the current file resides
+    current_file_dir = os.path.dirname(os.path.realpath(__file__))
+
+
+
     #kwargs same as local
     kwargs = dict(repetition_penalty=1.2,
         min_p=0.05,
         top_p=1.0,
         exaggeration=0.4, cfg_weight=0.6,
-        audio_prompt_path="reference_long.mp3",
+        audio_prompt_path=os.path.join(current_file_dir, "reference_long.mp3"),
         temperature=0.8)
 
     if len(input_text) <= 350:
