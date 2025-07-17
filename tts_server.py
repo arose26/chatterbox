@@ -54,8 +54,8 @@ app = FastAPI(title="ChatterboxTTS Server", description="Fast TTS API with model
 async def load_model():
     global model
     print(f"Loading ChatterboxTTS model on {DEVICE}...")
-    model = ChatterboxTTS.from_pretrained(DEVICE)
-    #model = ChatterboxTTS.from_local(MODEL_PATH, DEVICE)
+    #model = ChatterboxTTS.from_pretrained(DEVICE)
+    model = ChatterboxTTS.from_local(MODEL_PATH, DEVICE)
     #model = ChatterboxTTS.from_local('checkpoints_lora/merged_model', device='cuda')
     print("Model loaded successfully!")
 

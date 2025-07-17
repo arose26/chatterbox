@@ -62,7 +62,8 @@ def generate(input_text="Hi, my jock strap fell off.", index=None):
     kwargs = dict(repetition_penalty=1.2,
         min_p=0.05,
         top_p=1.0,
-        exaggeration=0.35, cfg_weight=0.65, audio_prompt_path="reference_long.mp3",
+        exaggeration=0.35, cfg_weight=0.65, 
+        #audio_prompt_path="reference_long.mp3",
         temperature=0.8)
     
     if len(input_text) <= 350:

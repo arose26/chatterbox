@@ -1,16 +1,19 @@
-import IPython
+try:
+    import IPython
+    from google.colab import files
+except:
+    pass
 import torch
 import os
-from google.colab import files
 import torchaudio
 import shutil
 import chatterbox
 import re
 import scipy.io.wavfile as wavfile
 import io
-
-
-#!pip install git+https://github.com/resemble-ai/chatterbox.git
+from pydub import AudioSegment
+import requests
+#!pip install git+https://github.com/arose26/chatterbox.git
 
 def chatterbox_to(model, device, dtype):
     print(f"Moving model to {str(device)}, {str(dtype)}")
@@ -26,24 +29,15 @@ def chatterbox_to(model, device, dtype):
 
 
 
-def get_model(
-    model_name="just_a_placeholder", device=torch.device("cuda"), dtype=torch.float32
-):
+def get_model( model_name="just_a_placeholder", device=torch.device("cuda"), dtype=torch.float32):
     from chatterbox.tts import ChatterboxTTS
     model = ChatterboxTTS.from_pretrained(device)
     #model = ChatterboxTTS.from_("/content/dl", device)
     return chatterbox_to(model, device, dtype)
 
-try:
-  print(model)
-  assert model is not None
-except:
-  model = get_model(
-      model_name="just_a_placeholder", device=torch.device("cuda"), dtype=torch.float32
-  )
-  #list(model.generate("""test."""))
 
-from pydub import AudioSegment
+
+
 
 def concat_mp3s(input_filenames, output_filename='concat.wav'):
   # List your MP3 filenames here
@@ -101,7 +95,7 @@ def group_sentences(sentences, max_len=350):
         chunks.append(current_chunk.strip())
     return chunks
 
-def generate(input_text="Hi, my jock strap fell off.", index=None):
+def generate(input_text="Hi there.", index=None):
     filename = sanitize_filename(input_text) + '.wav'
     if index:
         filename = str(index) + '.' + filename
@@ -111,7 +105,7 @@ def generate(input_text="Hi, my jock strap fell off.", index=None):
         min_p=0.05,
         top_p=1.0,
         exaggeration=0.4, cfg_weight=0.6,
-        audio_prompt_path="/content/reference_long.mp3",
+        audio_prompt_path="reference_long.mp3",
         temperature=0.8)
 
     if len(input_text) <= 350:
@@ -148,11 +142,22 @@ def generate(input_text="Hi, my jock strap fell off.", index=None):
 
 
 def run():
-    with open('narration.txt', 'r') as f:
-        texts = [process_text(line) for line in f if line]
+    global model
+    try:
+        assert model is not None
+    except:
+        model = get_model(model_name="just_a_placeholder", device=torch.device("cuda"), dtype=torch.float32 )
+    #list(model.generate("""test."""))
+    
+    
+    url = "https://pastebin.com/raw/13kcemCK"  # Use the raw link for plain text
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an error if the request failed
+    lines = response.text.splitlines()
+    texts = [process_text(line) for line in lines if line]
+
+    #with open('narration.txt', 'r') as f:
+    #    texts = [process_text(line) for line in f if line]
 
     for i, text in enumerate(texts):
         generate(text, i+1)
-
-if __name__ == "__main__":
-    run()
