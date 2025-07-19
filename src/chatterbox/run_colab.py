@@ -60,6 +60,7 @@ def process_text(text):
     """Process text to remove extra spaces and newlines"""
     #Remove [01:13:16] timestamps
     text = re.sub(r'\[[0-9]{2}:[0-9]{2}:[0-9]{2}\]', '', text.strip())
+    text = text.replace(" ok ", " OK ").replace(" im ", " I'm ")
     return text
 
 def sanitize_filename(filename, replacement=""):
