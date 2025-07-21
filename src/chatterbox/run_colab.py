@@ -14,6 +14,7 @@ import io
 from pydub import AudioSegment
 import requests
 import time
+from chatterbox.pastebin import get_most_recent_paste
 #!pip install git+https://github.com/arose26/chatterbox.git
 
 def chatterbox_to(model, device, dtype):
@@ -166,8 +167,12 @@ def run():
     #lines = response.text.splitlines()
 
 
-    with open('narration.txt', 'r') as f:
-        texts = [process_text(line) for line in f if line]
+    #If narration.txt exists, use it, otherwise use the default
+    if os.path.exists('narration.txt'):
+        with open('narration.txt', 'r') as f:
+            texts = [process_text(line) for line in f if line]
+    else: #Attempt to get from pastebin
+        texts = [process_text(line) for line in get_most_recent_paste().splitlines()]
 
     for i, text in enumerate(texts):
         generate(text, i+1)
