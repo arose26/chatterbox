@@ -2,7 +2,6 @@ import requests
 import xml.etree.ElementTree as ET
 
 api_dev_key = 'HNKedNEoBzYurdcai02udNLBx_rymUys'
-
 api_user_name = 'arozventi'     
 api_user_password = ',";7S9S:CSSRpHe' # Throwaway account so doesn't matter
 
@@ -12,12 +11,15 @@ login_data = {
     'api_user_name': api_user_name,
     'api_user_password': api_user_password
 }
-login_response = requests.post("https://pastebin.com/api/api_login.php", data=login_data)
-api_user_key = login_response.text.strip()
 
+def get_api_user_key():
+    login_response = requests.post("https://pastebin.com/api/api_login.php", data=login_data)
+    api_user_key = login_response.text.strip()
+    return api_user_key
 
 def create_paste(paste_text):
     # Step 2: Create a new paste
+    api_user_key = get_api_user_key()
     data = {
         'api_option': 'paste',
         'api_dev_key': api_dev_key,
@@ -31,6 +33,7 @@ def create_paste(paste_text):
     print("Paste URL:", response.text)
 
 def get_most_recent_paste():
+    api_user_key = get_api_user_key()
     # Step 1: Fetch a list of pastes
     data = {
         'api_option': 'list',
