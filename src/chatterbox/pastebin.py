@@ -30,31 +30,40 @@ def create_paste(paste_text):
     response = requests.post("https://pastebin.com/api/api_post.php", data=data)
     print("Paste URL:", response.text)
 
-
 def get_most_recent_paste():
-    # Step 1: Get metadata for the most recent paste
-    list_data = {
+    # Step 1: Fetch a list of pastes
+    data = {
         'api_option': 'list',
         'api_dev_key': api_dev_key,
         'api_user_key': api_user_key,
-        'api_results_limit': 1
+        'api_results_limit': 50
     }
 
-    list_response = requests.post("https://pastebin.com/api/api_post.php", data=list_data)
-    list_response.raise_for_status()
-    
-    # Step 2: Parse XML response to get the paste key
-    root = ET.fromstring(list_response.text)
-    paste_key = root.find('paste_key').text
+    response = requests.post("https://pastebin.com/api/api_post.php", data=data)
+    response.raise_for_status()
 
-    # Step 3: Fetch the raw text of that paste
+    # Step 2: Wrap the result in a root tag so it becomes valid XML
+    fixed_xml = f"<root>{response.text}</root>"
+    root = ET.fromstring(fixed_xml)
+
+    pastes = root.findall('paste')
+    if not pastes:
+        print("No pastes found.")
+        return None
+
+    # Step 3: Find the paste with the most recent date
+    most_recent = max(pastes, key=lambda p: int(p.find('paste_date').text))
+    paste_key = most_recent.find('paste_key').text
+    paste_title = most_recent.find('paste_title').text
+
+    # Step 4: Fetch the raw content of that paste
     raw_url = f"https://pastebin.com/raw/{paste_key}"
     raw_response = requests.get(raw_url)
     raw_response.raise_for_status()
-    paste_text = raw_response.text
 
+    content = raw_response.text
+    return content
 
-    return paste_text
 
 import sys 
 if __name__ == "__main__":
@@ -62,7 +71,10 @@ if __name__ == "__main__":
         print("Usage: python pastebin.py <input_file>")
         sys.exit(1)
     input_file = sys.argv[1]
-    with open(input_file, 'r') as file:
-        paste_text = file.read()
-    create_paste(paste_text)
-    print("Paste created")
+    if input_file == '!':
+        print(get_most_recent_paste())
+    else:
+        with open(input_file, 'r') as file:
+            paste_text = file.read()
+        create_paste(paste_text)
+        print("Paste created")
