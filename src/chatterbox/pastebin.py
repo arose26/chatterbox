@@ -26,22 +26,23 @@ api_dev_key = 'HNKedNEoBzYurdcai02udNLBx_rymUys'
 api_user_name = 'arozventi'     
 api_user_password = ',";7S9S:CSSRpHe' # Throwaway account so doesn't matter
 
-# Step 1: Get the user key
-login_data = {
-    'api_dev_key': api_dev_key,
-    'api_user_name': api_user_name,
-    'api_user_password': api_user_password
-}
-login_response = requests.post("https://pastebin.com/api/api_login.php", data=login_data)
-api_user_key = login_response.text.strip()
-
+def get_user_key():
+    # Step 1: Get the user key
+    login_data = {
+        'api_dev_key': api_dev_key,
+        'api_user_name': api_user_name,
+        'api_user_password': api_user_password
+    }
+    login_response = requests.post("https://pastebin.com/api/api_login.php", data=login_data)
+    api_user_key = login_response.text.strip()
+    return api_user_key
 
 def create_paste(paste_text):
     # Step 2: Create a new paste
     data = {
         'api_option': 'paste',
         'api_dev_key': api_dev_key,
-        'api_user_key': api_user_key,
+        'api_user_key': get_user_key(),
         'api_paste_code': encode(paste_text, 'gellybean'),
         'api_paste_name': 'Narration Upload',  # Optional: set a title
         'api_paste_private': '1',              # 0=public, 1=unlisted, 2=private
@@ -55,7 +56,7 @@ def get_most_recent_paste():
     data = {
         'api_option': 'list',
         'api_dev_key': api_dev_key,
-        'api_user_key': api_user_key,
+        'api_user_key': get_user_key(),
         'api_results_limit': 50
     }
 

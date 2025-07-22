@@ -7,8 +7,9 @@ from chatterbox.tts import ChatterboxTTS
 
 
 
-
-model = ChatterboxTTS.from_pretrained("cuda")
+MODEL_PATH ='dl'
+#model = ChatterboxTTS.from_pretrained("cuda")
+model = ChatterboxTTS.from_local(MODEL_PATH, 'cuda')
 
 import re
 def process_text(text):
@@ -63,7 +64,7 @@ def generate(input_text="Hi, my jock strap fell off.", index=None):
         min_p=0.05,
         top_p=1.0,
         exaggeration=0.35, cfg_weight=0.65, 
-        #audio_prompt_path="reference_long.mp3",
+        audio_prompt_path="reference_long.mp3",
         temperature=0.8)
     
     if len(input_text) <= 350:

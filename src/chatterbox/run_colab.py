@@ -157,14 +157,6 @@ def run():
     except:
         model = get_model(model_name="just_a_placeholder", device=torch.device("cuda"), dtype=torch.float32 )
     #list(model.generate("""test."""))
-    
-    
-    #url = "https://pastebin.com/raw/13kcemCK"  # Use the raw link for plain text
-    #url_with_cachebust = f"{url}?cachebust={int(time.time())}"
-    #response = requests.get(url_with_cachebust)
-    
-   # response.raise_for_status()  # Raise an error if the request failed
-    #lines = response.text.splitlines()
 
 
     #If narration.txt exists, use it, otherwise use the default
