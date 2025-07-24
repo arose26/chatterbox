@@ -122,7 +122,7 @@ def generate(input_text="Hi there.", index=None):
         if audio.ndim == 1:
           audio = audio.unsqueeze(0)
         torchaudio.save(filename, audio, 24000)
-        files.download(filename)
+        #files.download(filename)
         return
 
     #New - long passage support
@@ -142,7 +142,7 @@ def generate(input_text="Hi there.", index=None):
 
     if os.path.exists('concat.wav'):
         shutil.move('concat.wav', filename)
-        files.download(filename)
+        #files.download(filename)
     else:
         print("Error: concat.wav not found")
 
