@@ -37,7 +37,63 @@ def get_user_key():
     api_user_key = login_response.text.strip()
     return api_user_key
 
-def create_paste(paste_text):
+def delete_paste(paste_key):
+    """Delete a specific paste by its key."""
+    data = {
+        'api_option': 'delete',
+        'api_dev_key': api_dev_key,
+        'api_user_key': get_user_key(),
+        'api_paste_key': paste_key
+    }
+    response = requests.post("https://pastebin.com/api/api_post.php", data=data)
+    return response.text.strip()
+
+def delete_all_pastes():
+    """Delete all existing pastes for the user."""
+    # Step 1: Get list of all pastes
+    data = {
+        'api_option': 'list',
+        'api_dev_key': api_dev_key,
+        'api_user_key': get_user_key(),
+        'api_results_limit': 1000  # Get maximum number
+    }
+
+    response = requests.post("https://pastebin.com/api/api_post.php", data=data)
+    response.raise_for_status()
+
+    # Step 2: Parse the XML response
+    if response.text.strip() == "No pastes found.":
+        print("No pastes to delete.")
+        return
+
+    fixed_xml = f"<root>{response.text}</root>"
+    root = ET.fromstring(fixed_xml)
+
+    pastes = root.findall('paste')
+    if not pastes:
+        print("No pastes found.")
+        return
+
+    # Step 3: Delete each paste
+    deleted_count = 0
+    for paste in pastes:
+        paste_key = paste.find('paste_key').text
+        paste_title = paste.find('paste_title').text
+        result = delete_paste(paste_key)
+        if "Paste Removed" in result:
+            print(f"Deleted: {paste_title} ({paste_key})")
+            deleted_count += 1
+        else:
+            print(f"Failed to delete: {paste_title} ({paste_key}) - {result}")
+    
+    print(f"Successfully deleted {deleted_count} paste(s).")
+
+def create_paste(paste_text, delete_existing=False):
+    """Create a new paste, optionally deleting existing pastes first."""
+    if delete_existing:
+        print("Deleting existing pastes...")
+        delete_all_pastes()
+    
     # Step 2: Create a new paste
     data = {
         'api_option': 'paste',
@@ -90,12 +146,21 @@ import sys
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python pastebin.py <input_file>")
+        print("       python pastebin.py ! (to get most recent paste)")
+        print("       python pastebin.py --delete-all (to delete all pastes)")
         sys.exit(1)
+    
     input_file = sys.argv[1]
+    
     if input_file == '!':
         print(get_most_recent_paste())
+    elif input_file == '--delete-all':
+        delete_all_pastes()
     else:
+        # Check if user wants to delete existing pastes first
+        delete_existing = True# '--delete-existing' in sys.argv
+        
         with open(input_file, 'r') as file:
             paste_text = file.read()
-        create_paste(paste_text)
+        create_paste(paste_text, delete_existing=delete_existing)
         print("Paste created")
